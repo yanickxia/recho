@@ -1,0 +1,14 @@
+apiVersion: v1
+entries:
+  recho:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2024-09-27T07:51:16.540160194Z"
+    description: A Helm chart for Kubernetes
+    digest: 286dd277e0feba9ad0529f3515c9ca561d2352951059a7eded36ad5e8194aad6
+    name: recho
+    type: application
+    urls:
+    - https://github.com/yanickxia/recho/releases/download/recho-0.1.0/recho-0.1.0.tgz
+    version: 0.1.0
+generated: "2024-09-27T07:51:16.540171335Z"

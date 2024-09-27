@@ -160,6 +160,8 @@ curl -sL https://raw.githubusercontent.com/yanickxia/recho/master/docs/examples/
 
 ### <a name='KuberneteswithHelm'></a>Kubernetes with Helm
 
+<div class="artifacthub-widget" data-url="https://artifacthub.io/packages/helm/recho/recho" data-theme="light" data-header="true" data-stars="true" data-responsive="false"><blockquote><p lang="en" dir="ltr"><b>recho</b>: echo service</p>&mdash; Open in <a href="https://artifacthub.io/packages/helm/recho/recho">Artifact Hub</a></blockquote></div><script async src="https://artifacthub.io/artifacthub-widget.js"></script>
+
 ```bash
 helm repo add recho https://yanickxia.github.io/recho/
 helm repo update

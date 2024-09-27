@@ -19,7 +19,7 @@ pub struct Http {
 
 #[derive(Serialize)]
 pub struct Request {
-    pub headers: HashMap<String, String>,
+    pub headers: Option<HashMap<String, String>>,
     pub query: HashMap<String, Vec<String>>,
     pub body: String,
 }

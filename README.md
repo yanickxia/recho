@@ -129,3 +129,39 @@ Two: 2
 
 ⏳... 5000 ms
 ```
+
+## <a name='Settingup'></a>Setting up
+
+### <a name='Docker'></a>Docker
+
+```bash
+docker run -p 8080:80 yanickxia/recho
+```
+
+### <a name='Docker-Compose'></a>Docker-Compose
+
+**Sample**
+
+```yaml
+services:
+    recho:
+        image: yanickxia/recho
+        environment:
+            HTTP_PORT: 8080
+        ports:
+            - 8080:8080
+```
+
+### <a name='Kubernetes'></a>Kubernetes
+
+```bash
+curl -sL https://raw.githubusercontent.com/yanickxia/recho/master/docs/examples/kube.yaml | kubectl apply -f -
+```
+
+### <a name='KuberneteswithHelm'></a>Kubernetes with Helm
+
+```bash
+helm repo add recho https://yanickxia.github.io/recho/
+helm repo update
+helm install my-recho recho/recho
+```

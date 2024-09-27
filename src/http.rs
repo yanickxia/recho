@@ -7,10 +7,13 @@ use actix_web::rt::time::sleep;
 use actix_web::web::{Bytes, Payload, Query};
 use actix_web::{HttpRequest, HttpResponse};
 use std::collections::HashMap;
+use std::fs::File;
+use std::io::Read;
+use std::path::Path;
 use std::time::Duration;
 use url::Url;
 
-pub async fn echo(req: HttpRequest, mut body: Payload, param: Query<EchoRequest>) -> HttpResponse {
+pub async fn echo(req: HttpRequest, body: Payload, param: Query<EchoRequest>) -> HttpResponse {
     let request_body = String::from_utf8(body.to_bytes().await.or::<Bytes>(Ok(Bytes::new())).unwrap().to_vec()).unwrap();
 
     if param.echo_time.is_some() {
@@ -30,7 +33,7 @@ pub async fn echo(req: HttpRequest, mut body: Payload, param: Query<EchoRequest>
             protocol: req.connection_info().scheme().to_string(),
         }),
         request: config::APP_CONFIG.enable.request.then_some(Request {
-            headers: exact_headers(&req),
+            headers: config::APP_CONFIG.enable.header.then_some(exact_headers(&req)),
             query: exact_params(&req),
             body: request_body.clone(),
         }),
@@ -61,7 +64,7 @@ fn build_headers(param: &EchoRequest) -> HashMap<String, String> {
         Some(headers) => {
             headers.split(",")
                 .map(|it| {
-                    let mut spited: Vec<&str> = it.trim().split(":").collect();
+                    let spited: Vec<&str> = it.trim().split(":").collect();
                     if spited.len() != 2 {
                         return None;
                     }
@@ -78,12 +81,48 @@ fn build_headers(param: &EchoRequest) -> HashMap<String, String> {
 
 fn build_body(param: &EchoRequest) -> Option<String> {
     if param.echo_body.is_some() {
-        return Some(param.echo_body.clone().unwrap_or("".to_string()));
+        return Some(param.echo_body.clone()?);
     }
     if param.echo_env_body.is_some() {
-        return host::ALL_ENVS.get(param.echo_env_body.as_ref().unwrap()).map(|x| x.to_string());
+        return host::ALL_ENVS.get(param.echo_env_body.as_ref()?).map(|x| x.to_string());
     }
 
+    if config::APP_CONFIG.enable.file && param.echo_file.is_some() {
+        let request_file = param.echo_file.as_ref().unwrap();
+        let path = Path::new(request_file);
+        if path.is_dir() {
+            return match path.read_dir() {
+                Ok(dirs) => {
+                    let vec = dirs.map(|x| x.unwrap().path().to_str().unwrap().to_string())
+                        .collect::<Vec<String>>();
+                    Some(serde_json::to_string(&vec).unwrap())
+                }
+                Err(_) => {
+                    None
+                }
+            };
+        }
+
+        if path.is_file() {
+            return match File::open(path) {
+                Ok(mut file) => {
+                    let mut contents = String::new();
+                    return match file.read_to_string(&mut contents) {
+                        Ok(_) => {
+                            Some(contents)
+                        }
+                        Err(_) => {
+                            None
+                        }
+                    };
+                }
+                Err(_) => {
+                    None
+                }
+            };
+        }
+        return None;
+    }
     None
 }
 
@@ -104,7 +143,6 @@ fn build_status_code(code: Option<u16>) -> StatusCode {
         }
     }
 }
-
 
 fn exact_params(req: &HttpRequest) -> HashMap<String, Vec<String>> {
     let url = Url::parse(req.full_url().as_str()).unwrap();

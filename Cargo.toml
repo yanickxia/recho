@@ -5,8 +5,11 @@ edition = "2021"
 
 [dependencies]
 actix-web = "4"
+actix-web-validator = "6.0.0"
+validator = { version = "0.16", features = ["derive"] }
 env_logger = "0.11.5"
 lazy_static = "1.5.0"
 serde = { version = "1.0.210", features = ["derive"] }
 config = "0.14.0"
-
+http = "0.2.12"
+url = "2.5.2"

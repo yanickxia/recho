@@ -1,17 +1,14 @@
 use serde::Deserialize;
+use validator::Validate;
 
-#[derive(Deserialize)]
+
+#[derive(Deserialize, Validate)]
 pub struct EchoRequest {
     pub echo_code: Option<u16>,
     pub echo_body: Option<String>,
     pub echo_env_body: Option<String>,
     pub echo_header: Option<String>,
-    pub echo_time: Option<String>,
+    #[validate(range(min = 1, max = 30000))]
+    pub echo_time: Option<u64>,
     pub echo_file: Option<String>,
-}
-
-impl EchoRequest {
-    pub fn only_echo_body(&self) -> bool {
-        self.echo_body.is_some()
-    }
 }

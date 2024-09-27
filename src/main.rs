@@ -9,13 +9,12 @@ use actix_web::{web, App, HttpServer};
 
 
 fn main() -> std::io::Result<()> {
-    let config = config::load_config();
     env_logger::init_from_env(env_logger::Env::new().default_filter_or("info"));
     let runtime = Runtime::new()?;
     runtime.block_on(async {
         HttpServer::new(||
             App::new().service(web::resource("/{any:.*}").to(http::echo)))
-            .bind(format!("127.0.0.1:{}", config.http.port))?
+            .bind(format!("0.0.0.0:{}", config::APP_CONFIG.http.port))?
             .run()
             .await
     })

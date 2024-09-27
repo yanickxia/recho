@@ -1,2 +1,10 @@
 [http]
-port = 8081
+port = 80
+
+[enable]
+host = true
+http = true
+request = true
+header = true
+environment = true
+file = true

@@ -26,8 +26,8 @@ pub struct Request {
 
 #[derive(Serialize)]
 pub struct EchoResponse {
-    pub host: Host,
-    pub http: Http,
-    pub request: Request,
-    pub environment: HashMap<String, String>,
+    pub host: Option<Host>,
+    pub http: Option<Http>,
+    pub request: Option<Request>,
+    pub environment: Option<HashMap<String, String>>,
 }

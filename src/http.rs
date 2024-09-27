@@ -1,41 +1,55 @@
-use crate::host;
 use crate::request::EchoRequest;
 use crate::response::{EchoResponse, Host, Http, Request};
+use crate::{config, host};
 use actix_web::http::header::ContentType;
 use actix_web::http::StatusCode;
+use actix_web::rt::time::sleep;
 use actix_web::web::{Bytes, Payload, Query};
 use actix_web::{HttpRequest, HttpResponse};
 use std::collections::HashMap;
+use std::time::Duration;
+use url::Url;
 
 pub async fn echo(req: HttpRequest, mut body: Payload, param: Query<EchoRequest>) -> HttpResponse {
     let request_body = String::from_utf8(body.to_bytes().await.or::<Bytes>(Ok(Bytes::new())).unwrap().to_vec()).unwrap();
 
+    if param.echo_time.is_some() {
+        sleep(Duration::from_millis(param.echo_time.unwrap())).await;
+    }
+
     let response = EchoResponse {
-        host: Host {
+        host: config::APP_CONFIG.enable.host.then_some(Host {
             hostname: host::HOSTNAME.clone(),
             ip: req.peer_addr().unwrap().ip().to_string(),
             ips: exact_xff(&req),
-        },
-        http: Http {
+        }),
+        http: config::APP_CONFIG.enable.http.then_some(Http {
             method: req.method().to_string(),
             base_url: "".to_string(),
             original_url: req.uri().to_string(),
             protocol: req.connection_info().scheme().to_string(),
-        },
-        request: Request {
+        }),
+        request: config::APP_CONFIG.enable.request.then_some(Request {
             headers: exact_headers(&req),
             query: exact_params(&req),
             body: request_body.clone(),
-        },
-        environment: host::ALL_ENVS.clone(),
+        }),
+        environment: config::APP_CONFIG.enable.environment.then_some(host::ALL_ENVS.clone()),
     };
+
     let mut builder = HttpResponse::build(build_status_code(param.echo_code));
     for kv in build_headers(&param) {
         builder.append_header(kv);
     }
-    builder
-        .content_type(ContentType::json())
-        .json(build_body(&request_body, &param))
+
+    let body = build_body(&param);
+    if body.is_some() {
+        return builder.content_type(ContentType::plaintext())
+            .body(body.unwrap());
+    }
+
+    builder.content_type(ContentType::json())
+        .json(response)
 }
 
 
@@ -62,11 +76,15 @@ fn build_headers(param: &EchoRequest) -> HashMap<String, String> {
     }
 }
 
-fn build_body(request_body: &str, param: &EchoRequest) -> String {
-    if param.only_echo_body() {
-        return param.echo_body.clone().unwrap_or("".to_string());
+fn build_body(param: &EchoRequest) -> Option<String> {
+    if param.echo_body.is_some() {
+        return Some(param.echo_body.clone().unwrap_or("".to_string()));
     }
-    request_body.to_string()
+    if param.echo_env_body.is_some() {
+        return host::ALL_ENVS.get(param.echo_env_body.as_ref().unwrap()).map(|x| x.to_string());
+    }
+
+    None
 }
 
 fn build_status_code(code: Option<u16>) -> StatusCode {
@@ -89,15 +107,13 @@ fn build_status_code(code: Option<u16>) -> StatusCode {
 
 
 fn exact_params(req: &HttpRequest) -> HashMap<String, Vec<String>> {
-    req.query_string().split("&")
-        .map(|x| x.split("="))
-        .map(|mut x| (x.next().unwrap(), x.next().unwrap()))
-        .fold(HashMap::<String, Vec<String>>::new(), |mut acc, (k, v)| {
-            acc.entry(k.to_string())
-                .and_modify(|e| e.push(v.to_string()))
-                .or_insert(vec![v.to_string()]);
-            acc
-        })
+    let url = Url::parse(req.full_url().as_str()).unwrap();
+    url.query_pairs().fold(HashMap::<String, Vec<String>>::new(), |mut acc, (k, v)| {
+        acc.entry(k.to_string())
+            .and_modify(|e| e.push(v.to_string()))
+            .or_insert(vec![v.to_string()]);
+        acc
+    })
 }
 
 fn exact_headers(req: &HttpRequest) -> HashMap<String, String> {

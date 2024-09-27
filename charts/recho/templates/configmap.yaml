@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{.Values.configmap.name}}
+data:
+  HTTP_PORT: {{ .Values.configmap.http.port | quote}}
+  ENABLE_HTTP: {{ .Values.configmap.enable.http | quote}}
+  ENABLE_HOST: {{ .Values.configmap.enable.host | quote}}
+  ENABLE_REQUEST: {{ .Values.configmap.enable.request | quote}}
+  ENABLE_HEADER: {{ .Values.configmap.enable.header | quote}}
+  ENABLE_ENVIRONMENT: {{ .Values.configmap.enable.environment | quote}}
+  ENABLE_FILE: {{ .Values.configmap.enable.file | quote}}

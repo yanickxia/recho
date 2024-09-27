@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: recho
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: recho
+  template:
+    metadata:
+      labels:
+        app: recho
+    spec:
+      containers:
+        - name: recho
+          image: yanickxia/recho
+          ports:
+            - containerPort: 80
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+          resources:
+            limits:
+              cpu: "1"
+              memory: 1Gi
+            requests:
+              cpu: 100m
+              memory: 128Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: recho
+spec:
+  ports:
+    - name: http-recho
+      port: 80
+  selector:
+    app: recho

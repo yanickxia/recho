@@ -24,5 +24,8 @@ jobs:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.6.0
+        with:
+          mark_as_latest: false
+          skip_existing: true
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"

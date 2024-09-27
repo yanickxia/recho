@@ -5,6 +5,7 @@ inspire by [Echo-Server](https://github.com/Ealenn/Echo-Server/)
 Available:
 
 ![](https://img.shields.io/badge/linux-amd64-blue?style=flat-square&logo=docker)
+[![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/recho)](https://artifacthub.io/packages/search?repo=recho)
 
 - GET / POST / PUT / PATCH / DELETE
 - Request (Query, Body, IPs, Host, Urls...)
@@ -16,7 +17,7 @@ Available:
 
 ## Configuration
 
-| Environment        | Helm(not yet ready)          | Default |
+| Environment        | Helm                         | Default |
 |--------------------|------------------------------|---------|
 | HTTP_PORT          | configmap.http.port          | `80`    |
 | ENABLE_HOST        | configmap.enable.host        | `true`  |

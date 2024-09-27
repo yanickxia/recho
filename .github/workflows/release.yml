@@ -1,4 +1,4 @@
-name: "zip"
+name: zip bin release
 
 on:
   release:

@@ -4,6 +4,7 @@ metadata:
   name: {{.Values.configmap.name}}
 data:
   HTTP_PORT: {{ .Values.configmap.http.port | quote}}
+  HTTP_METRICS: {{ .Values.configmap.metrics.port | quote}}
   ENABLE_HTTP: {{ .Values.configmap.enable.http | quote}}
   ENABLE_HOST: {{ .Values.configmap.enable.host | quote}}
   ENABLE_REQUEST: {{ .Values.configmap.enable.request | quote}}

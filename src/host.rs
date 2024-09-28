@@ -2,10 +2,9 @@ use lazy_static::lazy_static;
 use std::collections::HashMap;
 use std::env;
 
-
 lazy_static! {
-   pub static ref ALL_ENVS: HashMap<String, String> = all_envs();
-   pub static ref HOSTNAME: Option<String> = hostname();
+    pub static ref ALL_ENVS: HashMap<String, String> = all_envs();
+    pub static ref HOSTNAME: Option<String> = hostname();
 }
 
 pub fn hostname() -> Option<String> {

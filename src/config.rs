@@ -2,19 +2,23 @@ use config::Config;
 use lazy_static::lazy_static;
 use serde::Deserialize;
 
-
 lazy_static! {
-   pub static ref APP_CONFIG: EchoConfig = load_config();
+    pub static ref APP_CONFIG: EchoConfig = load_config();
 }
 
 #[derive(Deserialize)]
 pub struct EchoConfig {
     pub http: Http,
     pub enable: Enable,
+    pub metrics: Metrics,
 }
 
 #[derive(Deserialize)]
 pub struct Http {
+    pub port: u32,
+}
+#[derive(Deserialize)]
+pub struct Metrics {
     pub port: u32,
 }
 

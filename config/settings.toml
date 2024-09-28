@@ -8,3 +8,6 @@ request = true
 header = true
 environment = true
 file = true
+
+[metrics]
+port = 9091

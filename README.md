@@ -18,8 +18,9 @@ Available:
 ## Configuration
 
 | Environment        | Helm                         | Default |
-|--------------------|------------------------------|---------|
+| ------------------ | ---------------------------- | ------- |
 | HTTP_PORT          | configmap.http.port          | `80`    |
+| HTTP_METRICS       | configmap.metrics.port       | `9091`  |
 | ENABLE_HOST        | configmap.enable.host        | `true`  |
 | ENABLE_HTTP        | configmap.enable.http        | `true`  |
 | ENABLE_REQUEST     | configmap.enable.request     | `true`  |
@@ -31,7 +32,7 @@ Available:
 ### Custom responses
 
 | Query           | Header          | Content                         | Conditions                |
-|-----------------|-----------------|---------------------------------|---------------------------|
+| --------------- | --------------- | ------------------------------- | ------------------------- |
 | ?echo_code=     | X-ECHO-CODE     | HTTP code `200`, `404`          | 200 <= `CODE` <= 599      |
 |                 |                 | `404-401` or `200-500-301`      |                           |
 | ?echo_body=     | X-ECHO-BODY     | Body message                    |                           |
@@ -40,7 +41,7 @@ Available:
 | ?echo_time=     | X-ECHO-TIME     | Wait time in `ms`               | 0 < `TIME` <= 30s         |
 | ?echo_file=     | X-ECHO-FILE     | Path of Directory or File       | Enable file `true`        |
 
-#### <a name='CustomHTTPStatusCode'></a>Custom HTTP Status Code
+#### Custom HTTP Status Code
 
 ```bash
 ➜ curl -I --header 'X-ECHO-CODE: 404' localhost:8080
@@ -71,7 +72,7 @@ HTTP/1.1 200 OK
 HTTP/1.1 500 Internal Server Error
 ```
 
-#### <a name='CustomBody'></a>Custom Body
+#### Custom Body
 
 ```bash
 ➜ curl --header 'X-ECHO-BODY: amazing' localhost:8080
@@ -80,7 +81,7 @@ HTTP/1.1 500 Internal Server Error
 "amazing"
 ```
 
-#### <a name='CustomBodywithEnvironmentvariablevalue'></a>Custom Body with Environment variable value
+#### Custom Body with Environment variable value
 
 ```bash
 ➜ curl --header 'X-ECHO-ENV-BODY: HOSTNAME' localhost:8080
@@ -102,7 +103,7 @@ HTTP/1.1 500 Internal Server Error
 "c53a9ed79fa2"
 ```
 
-#### <a name='CustomHeaders'></a>Custom Headers
+#### Custom Headers
 
 ```bash
 ➜ curl --header 'X-ECHO-HEADER: One:1' localhost:8080
@@ -121,7 +122,7 @@ One: 1
 Two: 2
 ```
 
-#### <a name='Customresponselatency'></a>Custom response latency
+#### Custom response latency
 
 ```bash
 ➜ curl --header 'X-ECHO-TIME: 5000' localhost:8080
@@ -130,15 +131,30 @@ Two: 2
 ⏳... 5000 ms
 ```
 
-## <a name='Settingup'></a>Setting up
+## Metrics
 
-### <a name='Docker'></a>Docker
+default metrics port `9091`, path `/metrics`
+
+```bash
+➜ curl localhost:9091/metrics
+# HELP http_requests Number of HTTP requests received.
+# TYPE http_requests counter
+http_requests_total{method="GET",path="/test",status_code="200"} 1
+http_requests_total{method="GET",path="/foo",status_code="200"} 1
+http_requests_total{method="GET",path="/bar",status_code="400"} 1
+http_requests_total{method="GET",path="/",status_code="200"} 2
+http_requests_total{method="GET",path="/bar",status_code="200"} 1
+```
+
+## Setting up
+
+### Docker
 
 ```bash
 docker run -p 8080:80 yanickxia/recho
 ```
 
-### <a name='Docker-Compose'></a>Docker-Compose
+### Docker-Compose
 
 **Sample**
 
@@ -152,15 +168,15 @@ services:
             - 8080:8080
 ```
 
-### <a name='Kubernetes'></a>Kubernetes
+### Kubernetes
 
 ```bash
 curl -sL https://raw.githubusercontent.com/yanickxia/recho/master/docs/examples/kube.yaml | kubectl apply -f -
 ```
 
-### <a name='KuberneteswithHelm'></a>Kubernetes with Helm
+### Kubernetes with Helm
 
-<div class="artifacthub-widget" data-url="https://artifacthub.io/packages/helm/recho/recho" data-theme="light" data-header="true" data-stars="true" data-responsive="false"><blockquote><p lang="en" dir="ltr"><b>recho</b>: echo service</p>&mdash; Open in <a href="https://artifacthub.io/packages/helm/recho/recho">Artifact Hub</a></blockquote></div><script async src="https://artifacthub.io/artifacthub-widget.js"></script>
+<div class="artifacthub-widget" data-url="https://artifacthub.io/packages/helm/recho/recho" data-theme="light" data-header="true" data-stars="true" data-responsive="false"><blockquote><p lang="en" dir="ltr"><b>recho</b>: echo service</p>&mdash; Open in <a href="https://artifacthub.io/packages/helm/recho/recho">Artifact Hub</a></blockquote></div>
 
 ```bash
 helm repo add recho https://yanickxia.github.io/recho/

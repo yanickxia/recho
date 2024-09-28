@@ -1,7 +1,6 @@
 use serde::Deserialize;
 use validator::Validate;
 
-
 #[derive(Deserialize, Validate)]
 pub struct EchoRequest {
     pub echo_code: Option<u16>,

@@ -17,6 +17,8 @@ configmap:
   name: recho
   http:
     port: 80
+  metrics:
+    port: 9091
   enable:
     host: true
     http: true

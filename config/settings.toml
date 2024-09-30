@@ -1,6 +1,11 @@
 [http]
 port = 80
 
+[https]
+port = 443
+private_key_file = "config/key.pem"
+certificate_chain_file = "config/cert.pem"
+
 [enable]
 host = true
 http = true
@@ -8,6 +13,7 @@ request = true
 header = true
 environment = true
 file = true
+https = true
 
 [metrics]
 port = 9091

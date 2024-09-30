@@ -9,6 +9,7 @@ lazy_static! {
 #[derive(Deserialize)]
 pub struct EchoConfig {
     pub http: Http,
+    pub https: Https,
     pub enable: Enable,
     pub metrics: Metrics,
 }
@@ -17,6 +18,14 @@ pub struct EchoConfig {
 pub struct Http {
     pub port: u32,
 }
+
+#[derive(Deserialize)]
+pub struct Https {
+    pub port: u32,
+    pub private_key_file: String,
+    pub certificate_chain_file: String,
+}
+
 #[derive(Deserialize)]
 pub struct Metrics {
     pub port: u32,
@@ -30,6 +39,7 @@ pub struct Enable {
     pub header: bool,
     pub environment: bool,
     pub file: bool,
+    pub https: bool,
 }
 
 pub fn load_config() -> EchoConfig {

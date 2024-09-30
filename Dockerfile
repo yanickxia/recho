@@ -4,6 +4,7 @@ WORKDIR /app
 RUN cargo build --release
 
 FROM debian:12
+RUN apt-get update && apt-get install -y libssl3
 COPY --from=builder /app/target/release/recho /app/recho
 ADD config /app/config
 WORKDIR /app

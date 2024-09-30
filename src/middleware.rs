@@ -15,6 +15,7 @@ use prometheus_client::registry::Registry;
 pub struct RequestLabels {
     method: String,
     path: String,
+    protocol: String,
     status_code: u32,
 }
 
@@ -80,15 +81,16 @@ where
     fn call(&self, req: ServiceRequest) -> Self::Future {
         let method = req.method().to_string();
         let path = req.path().to_string();
+        let protocol = req.connection_info().scheme().to_string();
 
         let fut = self.service.call(req);
 
         Box::pin(async move {
             let res = fut.await?;
-            println!("Hi from response");
             let labels = RequestLabels {
                 method,
                 path,
+                protocol,
                 status_code: res.status().as_u16() as u32,
             };
             HTTP_REQUESTS_COUNTER.get_or_create(&labels).inc();

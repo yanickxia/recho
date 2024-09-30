@@ -17,17 +17,21 @@ Available:
 
 ## Configuration
 
-| Environment        | Helm                         | Default |
-| ------------------ | ---------------------------- | ------- |
-| HTTP_PORT          | configmap.http.port          | `80`    |
-| HTTP_METRICS       | configmap.metrics.port       | `9091`  |
-| ENABLE_HOST        | configmap.enable.host        | `true`  |
-| ENABLE_HTTP        | configmap.enable.http        | `true`  |
-| ENABLE_REQUEST     | configmap.enable.request     | `true`  |
-| ENABLE_COOKIES     | configmap.enable.cookies     | `true`  |
-| ENABLE_HEADER      | configmap.enable.header      | `true`  |
-| ENABLE_ENVIRONMENT | configmap.enable.environment | `true`  |
-| ENABLE_FILE        | configmap.enable.file        | `true`  |
+| Environment                  | Helm                                   | Default           |
+| ---------------------------- | -------------------------------------- | ----------------- |
+| HTTP_PORT                    | configmap.http.port                    | `80`              |
+| HTTP_METRICS                 | configmap.metrics.port                 | `9091`            |
+| HTTPS_PORT                   | configmap.https.port                   | `443`             |
+| HTTPS_PRIVATE_KEY_FILE       | configmap.https.private_key_file       | `config/key.pem`  |
+| HTTPS_CERTIFICATE_CHAIN_FILE | configmap.https.certificate_chain_file | `config/cert.pem` |
+| ENABLE_HOST                  | configmap.enable.host                  | `true`            |
+| ENABLE_HTTP                  | configmap.enable.http                  | `true`            |
+| ENABLE_HTTPS                 | configmap.enable.https                 | `true`            |
+| ENABLE_REQUEST               | configmap.enable.request               | `true`            |
+| ENABLE_COOKIES               | configmap.enable.cookies               | `true`            |
+| ENABLE_HEADER                | configmap.enable.header                | `true`            |
+| ENABLE_ENVIRONMENT           | configmap.enable.environment           | `true`            |
+| ENABLE_FILE                  | configmap.enable.file                  | `true`            |
 
 ### Custom responses
 

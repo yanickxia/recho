@@ -41,7 +41,10 @@ spec:
                 name: {{ .Values.configmap.name }}
           ports:
             - name: http
-              containerPort: {{ .Values.service.port }}
+              containerPort: {{ .Values.service.http.port }}
+              protocol: TCP
+            - name: https
+              containerPort: {{ .Values.service.https.port }}
               protocol: TCP
           livenessProbe:
             {{- toYaml .Values.livenessProbe | nindent 12 }}

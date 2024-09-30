@@ -17,6 +17,10 @@ configmap:
   name: recho
   http:
     port: 80
+  https:
+    port: 443
+    private_key_file: config/key.pem
+    certificate_chain_file: config/cert.pem
   metrics:
     port: 9091
   enable:
@@ -26,7 +30,7 @@ configmap:
     header: true
     environment: true
     file: true
-
+    https: true
 
 
 # This is for the secretes for pulling an image from a private repository more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
@@ -70,7 +74,10 @@ service:
   # This sets the service type more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
   type: ClusterIP
   # This sets the ports more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/#field-spec-ports
-  port: 80
+  http:
+    port: 80
+  https:
+    port: 443
 
 # This block is for setting up the ingress for more information can be found here: https://kubernetes.io/docs/concepts/services-networking/ingress/
 ingress:

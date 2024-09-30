@@ -5,7 +5,11 @@ metadata:
 data:
   HTTP_PORT: {{ .Values.configmap.http.port | quote}}
   HTTP_METRICS: {{ .Values.configmap.metrics.port | quote}}
+  HTTPS_PORT: {{ .Values.configmap.https.port | quote}}
+  HTTPS_PRIVATE_KEY_FILE: {{ .Values.configmap.https.private_key_file | quote}}
+  HTTPS_CERTIFICATE_CHAIN_FILE: {{ .Values.configmap.https.certificate_chain_file | quote}}
   ENABLE_HTTP: {{ .Values.configmap.enable.http | quote}}
+  ENABLE_HTTPS: {{ .Values.configmap.enable.https | quote}}
   ENABLE_HOST: {{ .Values.configmap.enable.host | quote}}
   ENABLE_REQUEST: {{ .Values.configmap.enable.request | quote}}
   ENABLE_HEADER: {{ .Values.configmap.enable.header | quote}}

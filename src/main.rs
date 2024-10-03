@@ -19,11 +19,11 @@ async fn main() {
     }
 
     if config::APP_CONFIG.enable.grpc {
-        handles.push(grpc::server::run_grpc());
+        grpc::server::run_grpc();
     }
 
     if config::APP_CONFIG.enable.grpc_tls {
-        handles.push(grpc::server::run_grpc_tls());
+        grpc::server::run_grpc_tls();
     }
     futures::future::join_all(handles).await;
 }

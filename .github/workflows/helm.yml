@@ -1,8 +1,11 @@
 name: Release Charts
 
+# Only trigger, when the build page workflow succeeded
 on:
-  release:
-    types: [ created ]
+  workflow_run:
+    workflows: ["GitHub Pages"]
+    types:
+      - completed
 
 jobs:
   release:

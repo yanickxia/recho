@@ -27,7 +27,17 @@ helm upgrade -i ${name} ealenn/echo-server --namespace ${namespace} --force
 | configmap.enable.host                      | bool   | `true`              | Enable host in response                                        |
 | configmap.enable.http                      | bool   | `true`              | Enable http in response                                        |
 | configmap.enable.request                   | bool   | `true`              | Enable request in response                                     |
-| configmap.http.port                        | int    | 80                  |                                                                |
+| configmap.enable.https                     | bool   | `true`              | Enable https                                                   |
+| configmap.enable.grpc                      | bool   | `true`              | Enable plaintext grpc                                          |
+| configmap.enable.grpcTls                   | bool   | `true`              | Enable grpc over tls                                           |
+| configmap.http.port                        | int    | 80                  | http port                                                      |
+| configmap.https.port                       | int    | 443                 | https port                                                     |
+| configmap.https.private_key_file           | strig  | config/key.pem      | ssl key                                                        |
+| configmap.https.certificate_chain_file     | strig  | config/cert.pem     | ssl cert                                                       |
+| configmap.grpc.port                        | int    | 5001                | plaintext grpc port                                            |
+| configmap.grpc.tls.port                    | int    | 5002                |                                                                |
+| configmap.grpc.tls.private_key_file        | strig  | config/key.pem      | ssl key                                                        |
+| configmap.grpc.tls.certificate_chain_file  | strig  | config/cert.pem     | ssl cert                                                       |
 | fullnameOverride                           | string | `""`                |                                                                |
 | image.pullPolicy                           | string | `"IfNotPresent"`    |                                                                |
 | image.repository                           | string | `"yanickxia/recho"` | https://hub.docker.com/r/yanickxia/recho                       |

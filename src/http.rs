@@ -1,18 +1,20 @@
-use crate::request::EchoRequest;
-use crate::response::{EchoResponse, Host, Http, Request};
-use crate::{config, host, middleware};
-use actix_web::http::header::ContentType;
-use actix_web::http::StatusCode;
-use actix_web::rt::time::sleep;
-use actix_web::web::{Bytes, Payload, Query};
-use actix_web::{HttpRequest, HttpResponse};
-use prometheus_client::encoding::text::encode;
 use std::collections::HashMap;
 use std::fs::File;
 use std::io::Read;
 use std::path::Path;
 use std::time::Duration;
+
+use actix_web::{HttpRequest, HttpResponse};
+use actix_web::http::header::ContentType;
+use actix_web::http::StatusCode;
+use actix_web::rt::time::sleep;
+use actix_web::web::{Bytes, Payload, Query};
+use prometheus_client::encoding::text::encode;
 use url::Url;
+
+use crate::{config, host, middleware};
+use crate::request::EchoRequest;
+use crate::response::{EchoResponse, Host, Http, Request};
 
 pub async fn echo(req: HttpRequest, body: Payload, param: Query<EchoRequest>) -> HttpResponse {
     let request_body =
@@ -62,7 +64,7 @@ pub async fn echo(req: HttpRequest, body: Payload, param: Query<EchoRequest>) ->
 
 pub async fn metrics_handler() -> HttpResponse {
     let mut body = String::new();
-    encode(&mut body, &middleware::REGISTRY).unwrap();
+    encode(&mut body, &middleware::http::REGISTRY).unwrap();
     HttpResponse::Ok()
         .content_type("application/openmetrics-text; version=1.0.0; charset=utf-8")
         .body(body)
@@ -72,9 +74,9 @@ fn build_headers(param: &EchoRequest) -> HashMap<String, String> {
     match param.echo_header.clone() {
         None => Default::default(),
         Some(headers) => headers
-            .split(",")
+            .split(',')
             .filter_map(|it| {
-                let spited: Vec<&str> = it.trim().split(":").collect();
+                let spited: Vec<&str> = it.trim().split(':').collect();
                 if spited.len() != 2 {
                     return None;
                 }
@@ -169,7 +171,7 @@ fn exact_xff(req: &HttpRequest) -> Vec<String> {
         }
         Some(val) => match val.to_str() {
             Ok(val) => val
-                .split(",")
+                .split(',')
                 .map(|x| x.trim().to_string())
                 .collect::<Vec<String>>(),
             Err(_) => {

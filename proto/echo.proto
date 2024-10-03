@@ -1,0 +1,16 @@
+syntax = "proto3";
+package echo;
+
+service Echo {
+    // Our SayHello rpc accepts HelloRequests and returns HelloReplies
+    rpc Echo (EchoRequest) returns (EchoReply);
+}
+
+message EchoRequest {
+    string message = 1;
+    uint64 delay = 2;
+}
+
+message EchoReply {
+    string message = 1;
+}

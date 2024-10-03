@@ -1,6 +1,7 @@
-use lazy_static::lazy_static;
 use std::collections::HashMap;
 use std::env;
+
+use lazy_static::lazy_static;
 
 lazy_static! {
     pub static ref ALL_ENVS: HashMap<String, String> = all_envs();

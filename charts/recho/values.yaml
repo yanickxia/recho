@@ -21,6 +21,12 @@ configmap:
     port: 443
     private_key_file: config/key.pem
     certificate_chain_file: config/cert.pem
+  grpc:
+    port: 5001
+    tls:
+      port: 5002
+      private_key_file: config/key.pem
+      certificate_chain_file: config/cert.pem
   metrics:
     port: 9091
   enable:
@@ -31,6 +37,8 @@ configmap:
     environment: true
     file: true
     https: true
+    grpc: true
+    grpcTls: true
 
 
 # This is for the secretes for pulling an image from a private repository more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/

@@ -17,26 +17,32 @@ Available:
 
 ## Configuration
 
-| Environment                  | Helm                                   | Default           |
-| ---------------------------- | -------------------------------------- | ----------------- |
-| HTTP_PORT                    | configmap.http.port                    | `80`              |
-| HTTP_METRICS                 | configmap.metrics.port                 | `9091`            |
-| HTTPS_PORT                   | configmap.https.port                   | `443`             |
-| HTTPS_PRIVATE_KEY_FILE       | configmap.https.private_key_file       | `config/key.pem`  |
-| HTTPS_CERTIFICATE_CHAIN_FILE | configmap.https.certificate_chain_file | `config/cert.pem` |
-| ENABLE_HOST                  | configmap.enable.host                  | `true`            |
-| ENABLE_HTTP                  | configmap.enable.http                  | `true`            |
-| ENABLE_HTTPS                 | configmap.enable.https                 | `true`            |
-| ENABLE_REQUEST               | configmap.enable.request               | `true`            |
-| ENABLE_COOKIES               | configmap.enable.cookies               | `true`            |
-| ENABLE_HEADER                | configmap.enable.header                | `true`            |
-| ENABLE_ENVIRONMENT           | configmap.enable.environment           | `true`            |
-| ENABLE_FILE                  | configmap.enable.file                  | `true`            |
+| Environment                     | Helm                                   | Default           |
+|---------------------------------|----------------------------------------|-------------------|
+| HTTP_PORT                       | configmap.http.port                    | `80`              |
+| HTTP_METRICS                    | configmap.metrics.port                 | `9091`            |
+| HTTPS_PORT                      | configmap.https.port                   | `443`             |
+| HTTPS_PRIVATE_KEY_FILE          | configmap.https.private_key_file       | `config/key.pem`  |
+| HTTPS_CERTIFICATE_CHAIN_FILE    | configmap.https.certificate_chain_file | `config/cert.pem` |
+| GRPC_PORT                       | configmap.grpc.port                    | `5001`            |
+| GRPC_TLS_PORT                   | configmap.grpc.tls.port                | `5002`            |
+| GRPC_TLS_PRIVATE_KEY_FILE       | configmap.grpc.tls.port                | `config/key.pem`  |
+| GRPC_TLS_CERTIFICATE_CHAIN_FILE | configmap.grpc.tls.port                | `config/cert.pem` |
+| ENABLE_HOST                     | configmap.enable.host                  | `true`            |
+| ENABLE_HTTP                     | configmap.enable.http                  | `true`            |
+| ENABLE_HTTPS                    | configmap.enable.https                 | `true`            |
+| ENABLE_REQUEST                  | configmap.enable.request               | `true`            |
+| ENABLE_COOKIES                  | configmap.enable.cookies               | `true`            |
+| ENABLE_HEADER                   | configmap.enable.header                | `true`            |
+| ENABLE_ENVIRONMENT              | configmap.enable.environment           | `true`            |
+| ENABLE_FILE                     | configmap.enable.file                  | `true`            |
+| ENABLE_GRPC_TLS                 | configmap.enable.grpc_tls              | `true`            |
+| ENABLE_GRPC                     | configmap.enable.grpc                  | `true`            |
 
 ### Custom responses
 
 | Query           | Header          | Content                         | Conditions                |
-| --------------- | --------------- | ------------------------------- | ------------------------- |
+|-----------------|-----------------|---------------------------------|---------------------------|
 | ?echo_code=     | X-ECHO-CODE     | HTTP code `200`, `404`          | 200 <= `CODE` <= 599      |
 |                 |                 | `404-401` or `200-500-301`      |                           |
 | ?echo_body=     | X-ECHO-BODY     | Body message                    |                           |
@@ -135,6 +141,33 @@ Two: 2
 ⏳... 5000 ms
 ```
 
+## GRPC
+
+### ProtoBuf
+
+| Field   | Desc                    |
+|---------|-------------------------|
+| message | relay same message      |
+| delay   | how time delay to relay |
+
+### plaintext
+
+```bash
+➜ grpcurl -plaintext -use-reflection  -d '{"message": "1234"}' localhost:5001 echo.Echo/Echo
+{
+  "message": "1234"
+}
+```
+
+### TLS
+
+```bash
+➜ grpcurl -insecure -use-reflection  -d '{"message": "1234", "delay": 1000 }' localhost:5001 echo.Echo/Echo
+{
+  "message": "1234"
+}
+```
+
 ## Metrics
 
 default metrics port `9091`, path `/metrics`
@@ -143,11 +176,18 @@ default metrics port `9091`, path `/metrics`
 ➜ curl localhost:9091/metrics
 # HELP http_requests Number of HTTP requests received.
 # TYPE http_requests counter
-http_requests_total{method="GET",path="/test",status_code="200"} 1
-http_requests_total{method="GET",path="/foo",status_code="200"} 1
-http_requests_total{method="GET",path="/bar",status_code="400"} 1
-http_requests_total{method="GET",path="/",status_code="200"} 2
-http_requests_total{method="GET",path="/bar",status_code="200"} 1
+http_requests_total{method="GET",path="/foo",protocol="http",status_code="200"} 1
+http_requests_total{method="GET",path="/foo",protocol="https",status_code="200"} 2
+http_requests_total{method="GET",path="/bar",protocol="http",status_code="200"} 1
+http_requests_total{method="GET",path="/bar",protocol="https",status_code="200"} 2
+# HELP http_requests Number of HTTP requests received.
+# TYPE http_requests counter
+# HELP grpc_requests Number of GRPC requests received.
+# TYPE grpc_requests counter
+grpc_requests_total{method="/echo.Echo/Echo",protocol="tls"} 4
+grpc_requests_total{method="/grpc.reflection.v1alpha.ServerReflection/ServerReflectionInfo",protocol="plaintext"} 3
+grpc_requests_total{method="/grpc.reflection.v1alpha.ServerReflection/ServerReflectionInfo",protocol="tls"} 4
+grpc_requests_total{method="/echo.Echo/Echo",protocol="plaintext"} 3
 ```
 
 ## Setting up

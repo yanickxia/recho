@@ -15,3 +15,9 @@ data:
   ENABLE_HEADER: {{ .Values.configmap.enable.header | quote}}
   ENABLE_ENVIRONMENT: {{ .Values.configmap.enable.environment | quote}}
   ENABLE_FILE: {{ .Values.configmap.enable.file | quote}}
+  ENABLE_GRPC: {{ .Values.configmap.enable.grpc | quote }}
+  ENABLE_GRPC_TLS: {{ .Values.configmap.enable.grpcTls | quote }}
+  GRPC_PORT: {{ .Values.configmap.grpc.port | quote }}
+  GRPC_TLS_PORT: {{ .Values.configmap.grpc.tls.port | quote }}
+  GRPC_TLS_PRIVATE_KEY_FILE: {{ .Values.configmap.grpc.tls.private_key_file | quote }}
+  GRPC_TLS_CERTIFICATE_CHAIN_FILE: {{ .Values.configmap.grpc.tls.certificate_chain_file | quote }}

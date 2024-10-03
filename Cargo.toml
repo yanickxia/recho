@@ -2,6 +2,7 @@
 name = "recho"
 version = "0.1.0"
 edition = "2021"
+build = "build.rs"
 
 [dependencies]
 actix-web = { version = "4", features = ["openssl"] }
@@ -18,3 +19,12 @@ futures-util = "0.3.30"
 prometheus-client = "0.22.3"
 anyhow = "1.0.89"
 log = "0.4.22"
+tonic = { version = "0.12.3",features = ["tls"] }
+tonic-reflection = "0.12.3"
+prost = "0.13"
+tokio = "1.24.2"
+tower = "0.5.1"
+hyper = "1.4.1"
+
+[build-dependencies]
+tonic-build = { version = "0.12.3", features = ["prost"] }

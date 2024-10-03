@@ -6,6 +6,14 @@ port = 443
 private_key_file = "config/key.pem"
 certificate_chain_file = "config/cert.pem"
 
+[grpc]
+port = 5001
+
+[grpc.tls]
+port = 5002
+private_key_file = "config/key.pem"
+certificate_chain_file = "config/cert.pem"
+
 [enable]
 host = true
 http = true
@@ -14,6 +22,8 @@ header = true
 environment = true
 file = true
 https = true
+grpc = true
+grpc_tls = true
 
 [metrics]
 port = 9091

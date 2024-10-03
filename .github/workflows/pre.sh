@@ -1,1 +1,1 @@
-apt update && apt install -y protobuf-compiler
+apk add --no-cache make protobuf-dev

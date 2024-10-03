@@ -21,3 +21,4 @@ jobs:
         with:
           RUSTTARGET: ${{ matrix.target }}
           EXTRA_FILES: "README.md LICENSE config/settings.toml config/key.pem config/cert.pem"
+          PRE_BUILD: ".github/workflows/pre.sh"

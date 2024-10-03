@@ -1,1 +1,1 @@
-apk add --no-cache make protobuf-dev
+apk add --no-cache make protobuf-dev nasm

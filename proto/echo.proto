@@ -1,4 +1,5 @@
 syntax = "proto3";
+
 package echo;
 
 service Echo {
@@ -11,6 +12,19 @@ message EchoRequest {
     uint64 delay = 2;
 }
 
+message Grpc {
+    string protocol = 1;
+    string method = 2;
+}
+
+message Host {
+    optional string hostname = 1;
+    optional string ip = 2;
+}
+
 message EchoReply {
     string message = 1;
+    map<string, string> environment = 2;
+    optional Grpc grpc = 3;
+    optional Host host = 4;
 }

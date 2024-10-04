@@ -16,14 +16,14 @@ use tokio_rustls::{
     rustls::{pki_types::CertificateDer, ServerConfig},
     TlsAcceptor,
 };
-use tonic::{body::boxed, service::Routes};
 use tonic::transport::Server;
+use tonic::{body::boxed, service::Routes};
 use tower::ServiceExt;
 use tower_http::ServiceBuilderExt;
 
-use crate::{config, middleware};
 use crate::grpc::method;
 use crate::grpc::method::echo;
+use crate::{config, middleware};
 
 mod proto {
     tonic::include_proto!("echo");
@@ -42,9 +42,7 @@ pub fn run_grpc_tls() -> JoinHandle<()> {
     let key = {
         let fd = std::fs::File::open(config::APP_CONFIG.grpc.tls.private_key_file.clone()).unwrap();
         let mut buf = BufReader::new(&fd);
-        rustls_pemfile::private_key(&mut buf)
-            .unwrap()
-            .unwrap()
+        rustls_pemfile::private_key(&mut buf).unwrap().unwrap()
     };
 
     let mut tls = ServerConfig::builder()
@@ -60,7 +58,6 @@ pub fn run_grpc_tls() -> JoinHandle<()> {
         .build_v1alpha()
         .unwrap();
 
-
     let svc = Routes::new(echo::echo_server::EchoServer::new(server))
         .add_service(reflection_service)
         .prepare();
@@ -68,7 +65,9 @@ pub fn run_grpc_tls() -> JoinHandle<()> {
     let http = Builder::new(TokioExecutor::new());
 
     tokio::spawn(async move {
-        let listener = TcpListener::bind(format!("[::1]:{}", config::APP_CONFIG.grpc.tls.port)).await.expect("can't listening tls");
+        let listener = TcpListener::bind(format!("[::1]:{}", config::APP_CONFIG.grpc.tls.port))
+            .await
+            .expect("can't listening TLS");
         let tls_acceptor = TlsAcceptor::from(Arc::new(tls));
 
         loop {
@@ -105,10 +104,12 @@ pub fn run_grpc_tls() -> JoinHandle<()> {
 
                 http.serve_connection(
                     TokioIo::new(conn),
-                    TowerToHyperService::new(svc.map_request(|req: http::Request<_>| req.map(boxed))),
+                    TowerToHyperService::new(
+                        svc.map_request(|req: http::Request<_>| req.map(boxed)),
+                    ),
                 )
-                    .await
-                    .expect("unexpect exit");
+                .await
+                .expect("unexpect exit");
             });
         }
     })
@@ -120,7 +121,9 @@ pub fn run_grpc() -> JoinHandle<()> {
         .build_v1alpha()
         .unwrap();
 
-    let addr = format!("[::1]:{}", config::APP_CONFIG.grpc.port).parse().unwrap();
+    let addr = format!("[::1]:{}", config::APP_CONFIG.grpc.port)
+        .parse()
+        .unwrap();
     log::info!("GRPC listening on {}", addr);
 
     // The stack of middleware that our service will be wrapped in
@@ -128,7 +131,6 @@ pub fn run_grpc() -> JoinHandle<()> {
         // Apply our own middleware
         .layer(middleware::grpc::MetricsMiddlewareLayer::default())
         .into_inner();
-
 
     tokio::spawn(async move {
         Server::builder()
@@ -143,7 +145,7 @@ pub fn run_grpc() -> JoinHandle<()> {
 
 #[allow(dead_code)]
 #[derive(Debug)]
-struct ConnInfo {
+pub(crate) struct ConnInfo {
     addr: std::net::SocketAddr,
     certificates: Vec<CertificateDer<'static>>,
 }

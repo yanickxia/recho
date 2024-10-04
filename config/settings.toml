@@ -9,7 +9,7 @@ certificate_chain_file = "config/cert.pem"
 [grpc]
 port = 5001
 
-[grpc.tls]
+[grpc.TLS]
 port = 5002
 private_key_file = "config/key.pem"
 certificate_chain_file = "config/cert.pem"

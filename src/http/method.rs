@@ -13,8 +13,8 @@ use prometheus_client::encoding::text::encode;
 use url::Url;
 
 use crate::{config, host, middleware};
-use crate::request::EchoRequest;
-use crate::response::{EchoResponse, Host, Http, Request};
+use crate::http::request::EchoRequest;
+use crate::http::response::{EchoResponse, Host, Http, Request};
 
 pub async fn echo(req: HttpRequest, body: Payload, param: Query<EchoRequest>) -> HttpResponse {
     let request_body =
@@ -133,10 +133,7 @@ fn build_body(param: &EchoRequest) -> Option<String> {
 fn build_status_code(code: Option<u16>) -> StatusCode {
     match code {
         None => StatusCode::OK,
-        Some(code) => match StatusCode::from_u16(code) {
-            Ok(res) => res,
-            Err(_) => StatusCode::OK,
-        },
+        Some(code) => StatusCode::from_u16(code).unwrap_or(StatusCode::OK),
     }
 }
 

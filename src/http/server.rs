@@ -1,7 +1,7 @@
 use std::fs::File;
 use std::io::BufReader;
 
-use actix_web::{App, HttpServer, web};
+use actix_web::{web, App, HttpServer};
 use anyhow::Result;
 use rustls::pki_types::PrivateKeyDer;
 use rustls::ServerConfig;
@@ -19,14 +19,14 @@ pub fn run_https() -> JoinHandle<()> {
                 .wrap(middleware::http::Metrics)
                 .service(web::resource("/{any:.*}").to(method::echo))
         })
-            .bind_rustls_0_23(
-                format!("0.0.0.0:{}", config::APP_CONFIG.https.port),
-                load_rustls_config().unwrap(),
-            )
-            .unwrap()
-            .run()
-            .await
-            .expect("unexpect exit");
+        .bind_rustls_0_23(
+            format!("0.0.0.0:{}", config::APP_CONFIG.https.port),
+            load_rustls_config().unwrap(),
+        )
+        .unwrap()
+        .run()
+        .await
+        .expect("unexpect exit");
     })
 }
 
@@ -37,22 +37,24 @@ pub fn run_http() -> JoinHandle<()> {
                 .wrap(middleware::http::Metrics)
                 .service(web::resource("/{any:.*}").to(method::echo))
         })
-            .bind(format!("0.0.0.0:{}", config::APP_CONFIG.http.port))
-            .unwrap()
-            .run()
-            .await
-            .expect("unexpect exit");
+        .bind(format!("0.0.0.0:{}", config::APP_CONFIG.http.port))
+        .unwrap()
+        .run()
+        .await
+        .expect("unexpect exit");
     })
 }
 
 pub fn run_metrics() -> JoinHandle<()> {
     tokio::spawn(async {
-        HttpServer::new(|| App::new().service(web::resource("/metrics").to(method::metrics_handler)))
-            .bind(format!("0.0.0.0:{}", config::APP_CONFIG.metrics.port))
-            .unwrap()
-            .run()
-            .await
-            .expect("unexpect exit");
+        HttpServer::new(|| {
+            App::new().service(web::resource("/metrics").to(method::metrics_handler))
+        })
+        .bind(format!("0.0.0.0:{}", config::APP_CONFIG.metrics.port))
+        .unwrap()
+        .run()
+        .await
+        .expect("unexpect exit");
     })
 }
 
@@ -65,8 +67,18 @@ fn load_rustls_config() -> Result<ServerConfig> {
     let config = ServerConfig::builder().with_no_client_auth();
 
     // load TLS key/cert files
-    let cert_file = &mut BufReader::new(File::open(crate::config::APP_CONFIG.https.certificate_chain_file.clone()).unwrap());
-    let key_file = &mut BufReader::new(File::open(crate::config::APP_CONFIG.https.private_key_file.clone()).unwrap());
+    let cert_file = &mut BufReader::new(
+        File::open(
+            crate::config::APP_CONFIG
+                .https
+                .certificate_chain_file
+                .clone(),
+        )
+        .unwrap(),
+    );
+    let key_file = &mut BufReader::new(
+        File::open(crate::config::APP_CONFIG.https.private_key_file.clone()).unwrap(),
+    );
 
     // convert files to key/cert objects
     let cert_chain = certs(cert_file).collect::<Result<Vec<_>, _>>()?;

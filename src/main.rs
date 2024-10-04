@@ -1,11 +1,9 @@
 mod config;
+mod contants;
+mod grpc;
 mod host;
 mod http;
-mod request;
-mod response;
-mod grpc;
 mod middleware;
-
 
 #[tokio::main]
 async fn main() {
@@ -27,5 +25,3 @@ async fn main() {
     }
     futures::future::join_all(handles).await;
 }
-
-

@@ -22,21 +22,21 @@ pub struct RequestLabels {
 }
 
 lazy_static! {
-    pub static ref HTTP_REQUESTS_COUNTER: Family::<RequestLabels, Counter> = Family::<RequestLabels, Counter>::default();
-
+    pub static ref HTTP_REQUESTS_COUNTER: Family::<RequestLabels, Counter> =
+        Family::<RequestLabels, Counter>::default();
     pub static ref REGISTRY: Registry = {
         let mut r = <Registry>::default();
 
         r.register(
-        "http_requests",
-        "Number of HTTP requests received",
-        HTTP_REQUESTS_COUNTER.clone(),
+            "http_requests",
+            "Number of HTTP requests received",
+            HTTP_REQUESTS_COUNTER.clone(),
         );
 
         r.register(
-        "grpc_requests",
-        "Number of GRPC requests received",
-        grpc::GRPC_REQUESTS_COUNTER.clone(),
+            "grpc_requests",
+            "Number of GRPC requests received",
+            grpc::GRPC_REQUESTS_COUNTER.clone(),
         );
 
         r
@@ -54,7 +54,7 @@ pub struct Metrics;
 // `B` - type of response's body
 impl<S, B> Transform<S, ServiceRequest> for Metrics
 where
-    S: Service<ServiceRequest, Response=ServiceResponse<B>, Error=Error>,
+    S: Service<ServiceRequest, Response = ServiceResponse<B>, Error = Error>,
     S::Future: 'static,
     B: 'static,
 {
@@ -75,7 +75,7 @@ pub struct MetricsMiddleware<S> {
 
 impl<S, B> Service<ServiceRequest> for MetricsMiddleware<S>
 where
-    S: Service<ServiceRequest, Response=ServiceResponse<B>, Error=Error>,
+    S: Service<ServiceRequest, Response = ServiceResponse<B>, Error = Error>,
     S::Future: 'static,
     B: 'static,
 {

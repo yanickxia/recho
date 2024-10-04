@@ -17,39 +17,40 @@ Available:
 
 ## Configuration
 
-| Environment                     | Helm                                   | Default           |
-|---------------------------------|----------------------------------------|-------------------|
-| HTTP_PORT                       | configmap.http.port                    | `80`              |
-| HTTP_METRICS                    | configmap.metrics.port                 | `9091`            |
-| HTTPS_PORT                      | configmap.https.port                   | `443`             |
-| HTTPS_PRIVATE_KEY_FILE          | configmap.https.private_key_file       | `config/key.pem`  |
-| HTTPS_CERTIFICATE_CHAIN_FILE    | configmap.https.certificate_chain_file | `config/cert.pem` |
-| GRPC_PORT                       | configmap.grpc.port                    | `5001`            |
-| GRPC_TLS_PORT                   | configmap.grpc.tls.port                | `5002`            |
-| GRPC_TLS_PRIVATE_KEY_FILE       | configmap.grpc.tls.port                | `config/key.pem`  |
-| GRPC_TLS_CERTIFICATE_CHAIN_FILE | configmap.grpc.tls.port                | `config/cert.pem` |
-| ENABLE_HOST                     | configmap.enable.host                  | `true`            |
-| ENABLE_HTTP                     | configmap.enable.http                  | `true`            |
-| ENABLE_HTTPS                    | configmap.enable.https                 | `true`            |
-| ENABLE_REQUEST                  | configmap.enable.request               | `true`            |
-| ENABLE_COOKIES                  | configmap.enable.cookies               | `true`            |
-| ENABLE_HEADER                   | configmap.enable.header                | `true`            |
-| ENABLE_ENVIRONMENT              | configmap.enable.environment           | `true`            |
-| ENABLE_FILE                     | configmap.enable.file                  | `true`            |
-| ENABLE_GRPC_TLS                 | configmap.enable.grpc_tls              | `true`            |
-| ENABLE_GRPC                     | configmap.enable.grpc                  | `true`            |
+**HTTP & Metrics Server Always Enabled**
+
+| Environment                     | Helm                                   | Default           | Desc                                |
+|---------------------------------|----------------------------------------|-------------------|-------------------------------------|
+| HTTP_PORT                       | configmap.http.port                    | `80`              | http listen port                    |
+| HTTP_METRICS                    | configmap.metrics.port                 | `9091`            | http metrics port                   |
+| HTTPS_PORT                      | configmap.https.port                   | `443`             | https listen port                   |
+| HTTPS_PRIVATE_KEY_FILE          | configmap.https.private_key_file       | `config/key.pem`  | https tls private key file          |
+| HTTPS_CERTIFICATE_CHAIN_FILE    | configmap.https.certificate_chain_file | `config/cert.pem` | https tls certificate file          |
+| GRPC_PORT                       | configmap.grpc.port                    | `5001`            | grpc plaintext port                 |
+| GRPC_TLS_PORT                   | configmap.grpc.TLS.port                | `5002`            | grpc tls port                       |
+| GRPC_TLS_PRIVATE_KEY_FILE       | configmap.grpc.TLS.port                | `config/key.pem`  | grpc tls private key file           |
+| GRPC_TLS_CERTIFICATE_CHAIN_FILE | configmap.grpc.TLS.port                | `config/cert.pem` | grpc tls certificate file           |
+| Module Enable                   |                                        |                   |                                     |
+| ENABLE_HOST                     | configmap.enable.host                  | `true`            | http(s)/grpc(tls): return Host info |
+| ENABLE_HTTP                     | configmap.enable.http                  | `true`            | http(s): return http info           |
+| ENABLE_REQUEST                  | configmap.enable.request               | `true`            | http(s): return request info        |
+| ENABLE_HEADER                   | configmap.enable.header                | `true`            | http(s): return headers             |
+| ENABLE_ENVIRONMENT              | configmap.enable.environment           | `true`            | http(s)/grpc(tls): return env info  |
+| ENABLE_FILE                     | configmap.enable.file                  | `true`            | http(s): support return file        |
+| ENABLE_HTTPS                    | configmap.enable.https                 | `true`            | enable https server                 |
+| ENABLE_GRPC_TLS                 | configmap.enable.grpc_tls              | `true`            | enable grpc plaintext server        |
+| ENABLE_GRPC                     | configmap.enable.grpc                  | `true`            | enable grpc tls server              |
 
 ### Custom responses
 
-| Query           | Header          | Content                         | Conditions                |
-|-----------------|-----------------|---------------------------------|---------------------------|
-| ?echo_code=     | X-ECHO-CODE     | HTTP code `200`, `404`          | 200 <= `CODE` <= 599      |
-|                 |                 | `404-401` or `200-500-301`      |                           |
-| ?echo_body=     | X-ECHO-BODY     | Body message                    |                           |
-| ?echo_env_body= | X-ECHO-ENV-BODY | The key of environment variable | Enable environment `true` |
-| ?echo_header=   | X-ECHO-HEADER   | Response Header `Lang: en-US`   | Enable header `true`      |
-| ?echo_time=     | X-ECHO-TIME     | Wait time in `ms`               | 0 < `TIME` <= 30s         |
-| ?echo_file=     | X-ECHO-FILE     | Path of Directory or File       | Enable file `true`        |
+| Query           | Header          | Content                                              | Conditions                |
+|-----------------|-----------------|------------------------------------------------------|---------------------------|
+| ?echo_code=     | X-ECHO-CODE     | HTTP code `200`, `404`   ,`404-401` or `200-500-301` | 200 <= `CODE` <= 599      |
+| ?echo_body=     | X-ECHO-BODY     | Body message                                         |                           |
+| ?echo_env_body= | X-ECHO-ENV-BODY | The key of environment variable                      | Enable environment `true` |
+| ?echo_header=   | X-ECHO-HEADER   | Response Header `Lang: en-US`                        | Enable header `true`      |
+| ?echo_time=     | X-ECHO-TIME     | Wait time in `ms`                                    | 0 < `TIME` <= 30s         |
+| ?echo_file=     | X-ECHO-FILE     | Path of Directory or File                            | Enable file `true`        |
 
 #### Custom HTTP Status Code
 
@@ -162,7 +163,7 @@ Two: 2
 ### TLS
 
 ```bash
-➜ grpcurl -insecure -use-reflection  -d '{"message": "1234", "delay": 1000 }' localhost:5001 echo.Echo/Echo
+➜ grpcurl -insecure -use-reflection  -d '{"message": "1234", "delay": 1000 }' localhost:5001 echo.Echo/Echo # delay after 1s
 {
   "message": "1234"
 }

@@ -29,15 +29,15 @@ helm upgrade -i ${name} ealenn/echo-server --namespace ${namespace} --force
 | configmap.enable.request                   | bool   | `true`              | Enable request in response                                     |
 | configmap.enable.https                     | bool   | `true`              | Enable https                                                   |
 | configmap.enable.grpc                      | bool   | `true`              | Enable plaintext grpc                                          |
-| configmap.enable.grpcTls                   | bool   | `true`              | Enable grpc over tls                                           |
+| configmap.enable.grpcTls                   | bool   | `true`              | Enable grpc over TLS                                           |
 | configmap.http.port                        | int    | 80                  | http port                                                      |
 | configmap.https.port                       | int    | 443                 | https port                                                     |
 | configmap.https.private_key_file           | strig  | config/key.pem      | ssl key                                                        |
 | configmap.https.certificate_chain_file     | strig  | config/cert.pem     | ssl cert                                                       |
 | configmap.grpc.port                        | int    | 5001                | plaintext grpc port                                            |
-| configmap.grpc.tls.port                    | int    | 5002                |                                                                |
-| configmap.grpc.tls.private_key_file        | strig  | config/key.pem      | ssl key                                                        |
-| configmap.grpc.tls.certificate_chain_file  | strig  | config/cert.pem     | ssl cert                                                       |
+| configmap.grpc.TLS.port                    | int    | 5002                |                                                                |
+| configmap.grpc.TLS.private_key_file        | strig  | config/key.pem      | ssl key                                                        |
+| configmap.grpc.TLS.certificate_chain_file  | strig  | config/cert.pem     | ssl cert                                                       |
 | fullnameOverride                           | string | `""`                |                                                                |
 | image.pullPolicy                           | string | `"IfNotPresent"`    |                                                                |
 | image.repository                           | string | `"yanickxia/recho"` | https://hub.docker.com/r/yanickxia/recho                       |
@@ -48,7 +48,7 @@ helm upgrade -i ${name} ealenn/echo-server --namespace ${namespace} --force
 | ingress.hosts[0].host                      | string | `"cluster.local"`   |                                                                |
 | ingress.hosts[0].paths[0]                  | string | `"/"`               |                                                                |
 | ingress.ingressClassName                   | string | `""`                |                                                                |
-| ingress.tls                                | list   | `[]`                |                                                                |
+| ingress.TLS                                | list   | `[]`                |                                                                |
 | livenessProbe.failureThreshold             | int    | `3`                 |                                                                |
 | livenessProbe.httpGet.httpHeaders[0].name  | string | `"x-echo-code"`     |                                                                |
 | livenessProbe.httpGet.httpHeaders[0].value | string | `"200"`             |                                                                |
